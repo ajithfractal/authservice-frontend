@@ -1,0 +1,76 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #111827;
+  background: #f3f4f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+input,
+button,
+select {
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: #2563eb;
+  color: white;
+}
+
+button[disabled] {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.secondary-btn {
+  background: #f9fafb;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+nav a {
+  margin-right: 12px;
+}
+
+.badge {
+  padding: 4px 10px;
+  background: #dbeafe;
+  color: #1e3a8a;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.error {
+  color: #b91c1c;
+  margin-top: 10px;
+}
