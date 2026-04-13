@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { KeyRound, type LucideIcon, Shield, ShieldCheck, Users } from 'lucide-react';
+import { AppWindow, KeyRound, type LucideIcon, Shield, ShieldCheck, Users } from 'lucide-react';
 import { useAuth } from '@/services/AuthContext';
 import { AppButton } from '@/shared/components/app/AppButton';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,10 +9,19 @@ type AdminModule = {
   description: string;
   to: string;
   permission: string;
+  roles?: string[];
   icon: LucideIcon;
 };
 
 const adminModules: AdminModule[] = [
+  {
+    title: 'Applications',
+    description: 'Register and browse applications available in the system.',
+    to: '/admin/applications',
+    permission: 'applications:read',
+    roles: ['superAdmin'],
+    icon: AppWindow
+  },
   {
     title: 'Users',
     description: 'Manage user accounts, access status, and hierarchy assignment.',
@@ -45,7 +54,7 @@ const adminModules: AdminModule[] = [
 
 export function AdminDashboardPage() {
   const { can } = useAuth();
-  const visibleModules = adminModules.filter((m) => can([], [m.permission]));
+  const visibleModules = adminModules.filter((m) => can(m.roles ?? [], [m.permission]));
 
   return (
     <div className="space-y-6">

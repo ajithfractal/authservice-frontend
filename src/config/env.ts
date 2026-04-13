@@ -11,6 +11,8 @@ export const RBAC_ROLES_DROPDOWN_PATH =
   import.meta.env.VITE_RBAC_ROLES_DROPDOWN_PATH?.trim() ?? `${RBAC_ROLES_PATH}/dropdown`;
 
 export const RBAC_USERS_PATH = import.meta.env.VITE_RBAC_USERS_PATH?.trim() ?? '/rbac/users';
+export const REGISTERED_APPLICATIONS_PATH =
+  import.meta.env.VITE_REGISTERED_APPLICATIONS_PATH?.trim() ?? '/registered-applications';
 export const RBAC_ROLE_VISIBILITY_SCOPES_PATH =
   import.meta.env.VITE_RBAC_ROLE_VISIBILITY_SCOPES_PATH?.trim() ?? '/rbac/role-visibility-scopes';
 export const RLS_CONFIG_PATH = import.meta.env.VITE_RLS_CONFIG_PATH?.trim() ?? '/rls/config';

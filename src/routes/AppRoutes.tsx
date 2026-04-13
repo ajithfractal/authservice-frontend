@@ -7,6 +7,7 @@ import { PermissionsPage } from '@/views/pages/admin/PermissionsPage';
 import { RowLevelSecurityPage } from '@/views/pages/admin/RowLevelSecurityPage';
 import { RolesPage } from '@/views/pages/admin/RolesPage';
 import { UsersPage } from '@/views/pages/admin/UsersPage';
+import { RegisteredApplicationsPage } from '@/views/pages/admin/RegisteredApplicationsPage';
 import { AdminDashboardPage } from '@/views/pages/admin/AdminDashboardPage';
 import { DashboardPage } from '@/views/pages/DashboardPage';
 import { LoginPage } from '@/views/pages/LoginPage';
@@ -30,6 +31,14 @@ export function AppRoutes() {
         <Route element={<MainLayout />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
+            <Route
+              path="applications"
+              element={
+                <AdminPageGuard roles={['superAdmin']} permissions={['applications:read']}>
+                  <RegisteredApplicationsPage />
+                </AdminPageGuard>
+              }
+            />
             <Route
               path="users"
               element={

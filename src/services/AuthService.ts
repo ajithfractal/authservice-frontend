@@ -8,6 +8,7 @@ import {
   AUTH_ME_PATH,
   AUTH_REGISTER_PATH,
   ORG_UNITS_PATH,
+  REGISTERED_APPLICATIONS_PATH,
   RLS_CONFIG_PATH,
   RBAC_PERMISSIONS_PATH,
   RBAC_ROLE_VISIBILITY_SCOPES_PATH,
@@ -17,6 +18,10 @@ import {
     SSO_PROVIDERS_PATH
 } from '@/config/env';
 import type { CreateOrgUnitRequest, MoveOrgUnitRequest, OrgUnit } from '@/types/orgUnits';
+import type {
+  CreateRegisteredApplicationRequest,
+  RegisteredApplication
+} from '@/types/registeredApplications';
 import type { RlsConfig } from '@/types/rls';
 import type {
   BulkAssignOrgUnitRequest,
@@ -333,5 +338,20 @@ export class AuthService {
       method: 'PATCH',
       body: JSON.stringify(body)
     });
+  }
+
+  listRegisteredApplications(): Promise<RegisteredApplication[]> {
+    return this.http.request<RegisteredApplication[]>(REGISTERED_APPLICATIONS_PATH);
+  }
+
+  createRegisteredApplication(body: CreateRegisteredApplicationRequest): Promise<RegisteredApplication> {
+    return this.http.request<RegisteredApplication>(REGISTERED_APPLICATIONS_PATH, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+  }
+
+  getRegisteredApplicationById(id: string): Promise<RegisteredApplication> {
+    return this.http.request<RegisteredApplication>(`${REGISTERED_APPLICATIONS_PATH}/${encodeURIComponent(id)}`);
   }
 }

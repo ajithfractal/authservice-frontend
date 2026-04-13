@@ -34,6 +34,10 @@ import type {
   VisibilityScopeType
 } from '@/types/rbac';
 import type { CreateOrgUnitRequest, MoveOrgUnitRequest, OrgUnit } from '@/types/orgUnits';
+import type {
+  CreateRegisteredApplicationRequest,
+  RegisteredApplication
+} from '@/types/registeredApplications';
 import type { RlsConfig } from '@/types/rls';
 import type { RegisterUserRequest, User } from '@/types/auth';
 import { AuthController } from '@/controllers/AuthController';
@@ -93,6 +97,9 @@ interface AuthContextValue {
   deleteOrgUnit: (orgUnitId: string, cascade: boolean) => Promise<void>;
   getRlsConfig: () => Promise<RlsConfig>;
   patchRlsConfig: (body: RlsConfig) => Promise<RlsConfig>;
+  listRegisteredApplications: () => Promise<RegisteredApplication[]>;
+  createRegisteredApplication: (body: CreateRegisteredApplicationRequest) => Promise<RegisteredApplication>;
+  getRegisteredApplicationById: (id: string) => Promise<RegisteredApplication>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -319,6 +326,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const getRlsConfig = useCallback(() => authController.getRlsConfig(), [authController]);
   const patchRlsConfig = useCallback((body: RlsConfig) => authController.patchRlsConfig(body), [authController]);
+  const listRegisteredApplications = useCallback(
+    () => authController.listRegisteredApplications(),
+    [authController]
+  );
+  const createRegisteredApplication = useCallback(
+    (body: CreateRegisteredApplicationRequest) => authController.createRegisteredApplication(body),
+    [authController]
+  );
+  const getRegisteredApplicationById = useCallback(
+    (id: string) => authController.getRegisteredApplicationById(id),
+    [authController]
+  );
 
   const value: AuthContextValue = {
     user,
@@ -364,7 +383,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     moveOrgUnit,
     deleteOrgUnit,
     getRlsConfig,
-    patchRlsConfig
+    patchRlsConfig,
+    listRegisteredApplications,
+    createRegisteredApplication,
+    getRegisteredApplicationById
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,6 +1,10 @@
 import { AUTH_TOKEN_COOKIE_NAME, KEYCLOAK_CLIENT_ID } from '@/config/env';
 import { AuthService, type SsoProvider } from '@/services/AuthService';
 import type { CreateOrgUnitRequest, MoveOrgUnitRequest, OrgUnit } from '@/types/orgUnits';
+import type {
+  CreateRegisteredApplicationRequest,
+  RegisteredApplication
+} from '@/types/registeredApplications';
 import type { RlsConfig } from '@/types/rls';
 import { eraseCookieBestEffort, getCookieValue } from '@/utils/cookieAuth';
 import { isTokenExpired, mergeUserWithKeycloakAccessToken } from '@/utils/jwt';
@@ -218,6 +222,18 @@ export class AuthController {
 
   patchRlsConfig(body: RlsConfig): Promise<RlsConfig> {
     return this.authService.patchRlsConfig(body);
+  }
+
+  listRegisteredApplications(): Promise<RegisteredApplication[]> {
+    return this.authService.listRegisteredApplications();
+  }
+
+  createRegisteredApplication(body: CreateRegisteredApplicationRequest): Promise<RegisteredApplication> {
+    return this.authService.createRegisteredApplication(body);
+  }
+
+  getRegisteredApplicationById(id: string): Promise<RegisteredApplication> {
+    return this.authService.getRegisteredApplicationById(id);
   }
 
   /**
