@@ -110,14 +110,21 @@ export class AuthService {
     return this.http.request<RbacRoleDropdownItem[]>(RBAC_ROLES_DROPDOWN_PATH);
   }
 
-  /** Paginated permission catalog: `page`, `size`. */
-  listPermissionsPaged(params: { page: number; size: number; sort?: string }): Promise<PagedPermissions> {
+  /** Paginated permission catalog: `page`, `size`, optional `searchKey`. */
+  listPermissionsPaged(params: {
+    page: number;
+    size: number;
+    searchKey?: string;
+    sort?: string;
+  }): Promise<PagedPermissions> {
     const q = new URLSearchParams({
       page: String(params.page),
       size: String(params.size)
     });
     const sort = params.sort?.trim();
     if (sort) q.set('sort', sort);
+    const sk = params.searchKey?.trim();
+    if (sk) q.set('searchKey', sk);
     return this.http.request<PagedPermissions>(`${RBAC_PERMISSIONS_PATH}?${q.toString()}`);
   }
 

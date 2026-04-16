@@ -37,6 +37,8 @@ export function PermissionsPage() {
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
   const [sortBy, setSortBy] = useState<'name' | 'description'>('name');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [searchInput, setSearchInput] = useState('');
+  const [searchKey, setSearchKey] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +61,12 @@ export function PermissionsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await listPermissionsPaged({ page, size: PAGE_SIZE, sort: `${sortBy},${sortDir}` });
+      const res = await listPermissionsPaged({
+        page,
+        size: PAGE_SIZE,
+        searchKey,
+        sort: `${sortBy},${sortDir}`
+      });
       setItems(res.items);
       setPageCount(res.pageCount);
       setPageSize(res.limit);
@@ -69,7 +76,13 @@ export function PermissionsPage() {
     } finally {
       setLoading(false);
     }
-  }, [listPermissionsPaged, page, sortBy, sortDir]);
+  }, [listPermissionsPaged, page, searchKey, sortBy, sortDir]);
+
+  const applySearch = () => {
+    setPage(0);
+    const q = searchInput.trim();
+    setSearchKey(q || undefined);
+  };
 
   const changeSort = (field: 'name' | 'description') => {
     setPage(0);
@@ -173,6 +186,24 @@ export function PermissionsPage() {
             {error}
           </div>
         )}
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
+          <div className="min-w-0 flex-1 space-y-1">
+            <label htmlFor="permissions-search" className="text-xs text-muted-foreground">
+              Search
+            </label>
+            <Input
+              id="permissions-search"
+              placeholder="Search by name or description…"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && applySearch()}
+            />
+          </div>
+          <AppButton type="button" size="sm" variant="secondary" onClick={applySearch}>
+            Search
+          </AppButton>
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">

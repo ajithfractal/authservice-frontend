@@ -73,7 +73,6 @@ export function UsersPage() {
   const [regPassword, setRegPassword] = useState('');
   const [regFirstName, setRegFirstName] = useState('');
   const [regLastName, setRegLastName] = useState('');
-  const [regOrgUnitId, setRegOrgUnitId] = useState('');
   const [regApplicationCode, setRegApplicationCode] = useState('');
   const [regSaving, setRegSaving] = useState(false);
   const [regError, setRegError] = useState<string | null>(null);
@@ -94,7 +93,7 @@ export function UsersPage() {
   const [bulkSuccess, setBulkSuccess] = useState<string | null>(null);
   const [orgUnitOptions, setOrgUnitOptions] = useState<OrgUnit[]>([]);
 
-  const canViewAdminFilter = can([], ['admin:view']);
+  const canViewAdminFilter = can([], ['admin:read']);
   const canBulkWrite = can([], ['users:write']);
   const canReadOrgUnits = can([], ['org-units:read']);
   const canReadRoles = can([], ['roles:read']);
@@ -289,7 +288,6 @@ export function UsersPage() {
     setRegPassword('');
     setRegFirstName('');
     setRegLastName('');
-    setRegOrgUnitId('');
     setRegApplicationCode('');
     setRegError(null);
   };
@@ -304,8 +302,8 @@ export function UsersPage() {
         password: regPassword,
         firstName: regFirstName.trim(),
         lastName: regLastName.trim(),
-        orgUnitId: regOrgUnitId.trim() || null,
-        applicationCode: regApplicationCode.trim() || null
+        orgUnitId: null,
+        applicationCode: regApplicationCode.trim()
       });
       setAddOpen(false);
       void load();
@@ -700,18 +698,7 @@ export function UsersPage() {
               </label>
               <Input id="reg-last" value={regLastName} onChange={(e) => setRegLastName(e.target.value)} required />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="reg-org" className="text-sm font-medium">
-                Org unit ID
-              </label>
-              <Input
-                id="reg-org"
-                value={regOrgUnitId}
-                onChange={(e) => setRegOrgUnitId(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
-            <div className="space-y-2">
+            <div className="space-y-2 sm:col-span-2">
               <label htmlFor="reg-app" className="text-sm font-medium">
                 Application code
               </label>
@@ -719,7 +706,8 @@ export function UsersPage() {
                 id="reg-app"
                 value={regApplicationCode}
                 onChange={(e) => setRegApplicationCode(e.target.value)}
-                placeholder="Optional"
+                placeholder="e.g. inventory"
+                required
               />
             </div>
           </div>

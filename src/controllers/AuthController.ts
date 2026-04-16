@@ -89,7 +89,12 @@ export class AuthController {
     return this.authService.listRolesDropdown();
   }
 
-  listPermissionsPaged(params: { page: number; size: number; sort?: string }): Promise<PagedPermissions> {
+  listPermissionsPaged(params: {
+    page: number;
+    size: number;
+    searchKey?: string;
+    sort?: string;
+  }): Promise<PagedPermissions> {
     return this.authService.listPermissionsPaged(params);
   }
 

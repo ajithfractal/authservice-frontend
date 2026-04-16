@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/shared/components/ui/checkbox';
 import { Label } from '@/shared/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
+import { Input } from '@/shared/components/ui/input';
 
 const CATALOG_SIZE = 500;
 
@@ -30,6 +31,8 @@ export function RolePermissionsModal({ roleId, roleName, open, onClose, onUpdate
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [copySourceRoleId, setCopySourceRoleId] = useState('');
   const [replaceExisting, setReplaceExisting] = useState(true);
+  const [catalogSearchInput, setCatalogSearchInput] = useState('');
+  const [catalogBusy, setCatalogBusy] = useState(false);
 
   const load = useCallback(async () => {
     if (!roleId) return;
@@ -38,6 +41,7 @@ export function RolePermissionsModal({ roleId, roleName, open, onClose, onUpdate
     setPicked(new Set());
     setCopySourceRoleId('');
     setReplaceExisting(true);
+    setCatalogSearchInput('');
     try {
       const [r, permPage, roleOptions] = await Promise.all([
         getRole(roleId),
@@ -59,6 +63,23 @@ export function RolePermissionsModal({ roleId, roleName, open, onClose, onUpdate
   useEffect(() => {
     if (open && roleId) void load();
   }, [open, roleId, load]);
+
+  const applyCatalogSearch = async () => {
+    if (!roleId) return;
+    const sk = catalogSearchInput.trim() || undefined;
+    setPicked(new Set());
+    setCatalogBusy(true);
+    setError(null);
+    try {
+      const permPage = await listPermissionsPaged({ page: 0, size: CATALOG_SIZE, searchKey: sk });
+      setCatalog(permPage.items);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not search catalog');
+      setCatalog([]);
+    } finally {
+      setCatalogBusy(false);
+    }
+  };
 
   const assignedIds = new Set((role?.permissions ?? []).map((p: RbacPermissionRef) => p.id));
   const available = catalog.filter((p) => !assignedIds.has(p.id));
@@ -203,8 +224,37 @@ export function RolePermissionsModal({ roleId, roleName, open, onClose, onUpdate
 
           <div>
             <h3 className="mb-2 text-sm font-medium">Add from catalog</h3>
+            <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-2">
+              <div className="min-w-0 flex-1 space-y-1">
+                <label htmlFor="role-perm-catalog-search" className="text-xs text-muted-foreground">
+                  Search catalog
+                </label>
+                <Input
+                  id="role-perm-catalog-search"
+                  placeholder="Search by name or description…"
+                  value={catalogSearchInput}
+                  onChange={(e) => setCatalogSearchInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && void applyCatalogSearch()}
+                  disabled={catalogBusy || saving}
+                />
+              </div>
+              <AppButton
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={catalogBusy || saving}
+                onClick={() => void applyCatalogSearch()}
+              >
+                {catalogBusy ? 'Searching…' : 'Search'}
+              </AppButton>
+            </div>
             <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-3">
-              {available.length === 0 ? (
+              {catalogBusy ? (
+                <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading catalog…
+                </div>
+              ) : available.length === 0 ? (
                 <p className="text-sm text-muted-foreground">All catalog permissions are assigned (or catalog empty).</p>
               ) : (
                 available.map((p) => (

@@ -58,7 +58,12 @@ interface AuthContextValue {
   canAnyPermission: (permissions: string[]) => boolean;
   listRolesPaged: (params: { page: number; size: number; sort?: string }) => Promise<PagedRoles>;
   listRolesDropdown: () => Promise<RbacRoleDropdownItem[]>;
-  listPermissionsPaged: (params: { page: number; size: number; sort?: string }) => Promise<PagedPermissions>;
+  listPermissionsPaged: (params: {
+    page: number;
+    size: number;
+    searchKey?: string;
+    sort?: string;
+  }) => Promise<PagedPermissions>;
   listUsersPaged: (params: {
     page: number;
     size: number;
@@ -200,7 +205,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const listPermissionsPaged = useCallback(
-    (params: { page: number; size: number; sort?: string }) => authController.listPermissionsPaged(params),
+    (params: {
+      page: number;
+      size: number;
+      searchKey?: string;
+      sort?: string;
+    }) => authController.listPermissionsPaged(params),
     [authController]
   );
 
